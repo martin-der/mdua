@@ -3,7 +3,7 @@ package net.tetrakoopa.mdua.util;
 import java.io.IOException;
 import java.util.Locale;
 
-import net.tetrakoopa.mdua.Mdu;
+import net.tetrakoopa.mdua.Mdua;
 import net.tetrakoopa.mdu.util.FileUtil;
 
 import android.app.Activity;
@@ -79,7 +79,7 @@ public class ContractuelUtil {
 		try {
 			text = readAsset(activity, assetFilename).toString();
 		} catch (IOException e) {
-			Log.e(Mdu.TAG, "Unable to read text from " + assetFilename + " : " + e.getClass().getName() + ":" + e.getMessage());
+			Log.e(Mdua.TAG, "Unable to read text from " + assetFilename + " : " + e.getClass().getName() + ":" + e.getMessage());
 			return;
 		}
 		makeDialogContent(activity, builder, titleText, text, isHtml);
