@@ -9,6 +9,6 @@ public class MissingNeededException extends RuntimeException {
         this(NOTHING);
     }
     public MissingNeededException(String ...permissionNames) {
-        this.permissionNames = permissionNames;
+        this.permissionNames = permissionNames == null ? NOTHING : permissionNames;
     }
 }
