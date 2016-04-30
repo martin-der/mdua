@@ -1,7 +1,5 @@
-package net.tetrakoopa.mdua.util;
+package net.tetrakoopa.mdu.util;
 
-
-import net.tetrakoopa.mdu.util.FileUtil;
 
 import org.junit.Test;
 

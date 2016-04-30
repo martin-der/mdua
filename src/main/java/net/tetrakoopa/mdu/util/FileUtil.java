@@ -18,8 +18,9 @@ public class FileUtil {
 	}
 
 	public static void copy(InputStream input, OutputStream output) throws IOException {
-		byte buffer[] = new byte[200];
-
+		copy(input, output, new byte[200]);
+	}
+	public static void copy(InputStream input, OutputStream output, final byte buffer[]) throws IOException {
 		int l;
 		while ((l = input.read(buffer)) > 0) {
 			output.write(buffer, 0, l);
