@@ -3,7 +3,10 @@ package net.tetrakoopa.mdua.util;
 import android.content.Context;
 import android.content.Intent;
 
+import android.os.Bundle;
 import android.os.Parcelable;
+
+import java.io.Serializable;
 
 public class IntentUtil {
 
@@ -31,10 +34,22 @@ public class IntentUtil {
 		if (type!=null)
 			destination.setType(type);
 
+		final Bundle sourceExtras = source.getExtras();
 		for (String extra : extras) {
-			final Parcelable extraValue = source.getParcelableExtra(extra);
-			if (extraValue!=null)
-				destination.putExtra(extra, extraValue);
+			final Object extraValue = sourceExtras.get(extra);
+			if (extraValue!=null) {
+				if (extraValue instanceof Parcelable)
+					destination.putExtra(extra, (Parcelable)extraValue);
+
+				else if (extraValue instanceof String)
+					destination.putExtra(extra, (String)extraValue);
+
+				else if (extraValue instanceof Serializable)
+					destination.putExtra(extra, (Serializable)extraValue);
+
+				else
+					throw new IllegalStateException("Don't know how to handle Intent extra '"+extra+"' of type "+extra.getClass().getName());
+			}
 		}
 
 	}
