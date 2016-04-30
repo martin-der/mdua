@@ -1,3 +1,13 @@
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+    tasks.withType(JavaCompile) {
+        options.incremental = true
+    }
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -35,4 +45,8 @@ android {
 }*/
 
 dependencies {
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
 }
