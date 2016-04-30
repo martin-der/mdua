@@ -39,21 +39,21 @@ public class FileUtil {
 	}
 
 	/**
-	 * Equivalent to <code>fileSizeAsString(size, "%1.3f %2so.")</code>
+	 * Equivalent to <code>fileSizeAsString(size, "%1$.3f %2$sb.")</code>
 	 */
 	public static String fileSizeAsString(long size) {
-		return fileSizeAsString(size, "%1.3f %2so.");
+		return fileSizeAsString(size, "%1$.3f %2$sb.");
 	}
 
 	/**
 	 * @param format format used to display result, accept two place holders
 	 *            <table>
 	 *                <tr><th>Place Holder</th><th>Position</th></th><th>Type</th><th>example</th></tr>
-	 *                <tr><td>size</td><td>1</td></td><td>Float or Double</td><td><code>%1.1</code></td></tr>
-	 *                <tr><td>dimension</td><td>2</td><td>String</td><td><code>%2s</code></td></tr>
+	 *                <tr><td>size</td><td>1</td></td><td>Float or Double</td><td><code>%1$.1</code></td></tr>
+	 *                <tr><td>dimension</td><td>2</td><td>String</td><td><code>%2$s</code></td></tr>
 	 *            </table>
 	 *
-	 * example fileSizeAsString(3000000, "%1.3f %2so.")
+	 * example <code>fileSizeAsString(3000000, "%1$.3f %2$sb.")</code>
 	 */
 	public static String fileSizeAsString(long size, String format) {
 		final double bytes = size;
