@@ -3,8 +3,6 @@ package net.tetrakoopa.mdua.util;
 import android.content.Context;
 import android.content.Intent;
 
-import android.R;
-import android.net.Uri;
 import android.os.Parcelable;
 
 public class IntentUtil {
@@ -13,11 +11,11 @@ public class IntentUtil {
 		shareText(context, context.getResources().getString(title), subject, content);
 	}
 	public static void shareText(Context context, String title, String subject, String content) {
-		final Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+		final Intent sharingIntent = new Intent(Intent.ACTION_SEND);
 		sharingIntent.setType("text/plain");
 		if (subject!=null)
-			sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, content);
+			sharingIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+		sharingIntent.putExtra(Intent.EXTRA_TEXT, content);
 		context.startActivity(Intent.createChooser(sharingIntent, title));
 	}
 
