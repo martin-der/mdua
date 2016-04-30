@@ -39,12 +39,10 @@ android {
     }
     /*sourceSets.androidTest.setRoot('test')*/
 }
-/*dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.1.0'
-}*/
-
 dependencies {
+    //compile fileTree(dir: 'libs', include: ['*.jar'])
+    //compile 'com.android.support:appcompat-v7:23.1.0'
+    testCompile 'junit:junit:4.12'
 }
 
 task wrapper(type: Wrapper) {
