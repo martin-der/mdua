@@ -8,10 +8,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
+
+import java.util.concurrent.Executor;
 
 public class SystemUIUtil {
 
@@ -145,7 +149,67 @@ public class SystemUIUtil {
 
 		return builder;
 	}
-	public static ProgressDialog showProgress(Context context, String titre, String message, final DialogInterface.OnCancelListener listener) {
+
+	public static void showActionCancelDialog(final Context context, String titre, String action, String message, final DialogInterface.OnClickListener onClickListener) {
+		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, onClickListener, 0);
+		builder.setMessage(message).show();
+	}
+	public static void showActionCancelHtmlDialog(final Context context, String titre, String action, String message, final DialogInterface.OnClickListener onClickListener) {
+		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, onClickListener, 0);
+		builder.setMessage(Html.fromHtml(message)).show();
+	}
+
+	public static void showActionCancelDialog(final Context context, String titre, String action, String message, final DialogInterface.OnClickListener onClickListener, int iconId) {
+		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, onClickListener, iconId);
+		builder.setMessage(message).show();
+	}
+	public static void showActionCancelHtmlDialog(final Context context, String titre, String action, String message, final DialogInterface.OnClickListener onClickListener, int iconId) {
+		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, onClickListener, iconId);
+		builder.setMessage(Html.fromHtml(message)).show();
+	}
+
+	private static AlertDialog.Builder createActionCancelDialogBuilderWithoutMessage(final Context context, String titre, String action, final DialogInterface.OnClickListener onClickListener, int iconId) {
+
+		final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+		builder.setCancelable(true)
+			.setPositiveButton(action, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+					if (onClickListener != null) {
+						onClickListener.onClick(dialog, id);
+					}
+				}
+			})
+			.setNegativeButton(ResourcesUtil.getString(context, android.R.string.cancel), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+					if (onClickListener != null) {
+						onClickListener.onClick(dialog, id);
+					}
+				}
+			});
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			builder
+				.setOnDismissListener(new DialogInterface.OnDismissListener() {
+					@Override
+					public void onDismiss(DialogInterface dialog) {
+						if (onClickListener != null) {
+							onClickListener.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
+						}
+					}
+				});
+			}
+
+		builder.setTitle(titre);
+		if (iconId != 0)
+			builder.setIcon(iconId);
+
+		return builder;
+	}
+
+
+	public static ProgressDialog showProgress(Context context, final AsyncTask task, String titre, String message, final DialogInterface.OnCancelListener listener) {
 
 		final ProgressDialog dialog = ProgressDialog.show(context, titre, message, true, true, new OnCancelListener() {
 
@@ -156,7 +220,15 @@ public class SystemUIUtil {
 			}
 
 		});
+		task.executeOnExecutor(new Executor() {
+			@Override
+			public void execute(Runnable command) {
+
+			}
+		});
 		return dialog;
 	}
+
+
 
 }
