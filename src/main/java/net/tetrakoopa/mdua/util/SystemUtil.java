@@ -20,16 +20,27 @@ public class SystemUtil {
 	}
 	
 	public static void shareText(Context context, String title, String text) {
+		shareText(context, title, text, null);
+	}
+	public static void shareText(Context context, String title, String text, String subject) {
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("text/plain");
 		intent.putExtra(Intent.EXTRA_TEXT, text);
+		if (subject!=null) {
+			intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+		}
 		context.startActivity(Intent.createChooser(intent, title));
 	}
 	public static void shareTextViaEMail(Context context, String title, String text) {
+		shareTextViaEMail(context, title, text, null);
+	}
+	public static void shareTextViaEMail(Context context, String title, String text, String subject) {
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("message/rfc822");
-		intent.putExtra(Intent.EXTRA_SUBJECT, title);
 		intent.putExtra(Intent.EXTRA_TEXT, text);
+		if (subject!=null) {
+			intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+		}
 		context.startActivity(intent);
 	}
 
