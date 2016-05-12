@@ -9,6 +9,8 @@ import java.io.Reader;
 
 public class FileUtil {
 
+	public static final String DEFAULT_ENCODING = "utf-8";
+
 	public static String getAsString(Reader reader) throws IOException {
 		final char buffer[] = new char[200];
 		int l;
@@ -27,7 +29,10 @@ public class FileUtil {
 		}
 	}
 	public static CharSequence readCharSequence(InputStream inputStream) throws IOException {
-		final BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+		return readCharSequence(inputStream, DEFAULT_ENCODING);
+	}
+	public static CharSequence readCharSequence(InputStream inputStream, String encoding) throws IOException {
+		final BufferedReader in = new BufferedReader(new InputStreamReader(inputStream, encoding));
 		try {
 			String line;
 			StringBuilder buffer = new StringBuilder();
