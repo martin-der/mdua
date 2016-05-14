@@ -19,7 +19,7 @@ import android.util.Log;
 
 public abstract class DependencyHandler {
 
-	private static final String TAG = "mdu.and.DependencyHandler";
+	private static final String TAG = "mdua.DependencyHandler";
 
 	public static class DependencyResolution {
 
@@ -142,14 +142,14 @@ public abstract class DependencyHandler {
 			// start download
 
 			if (USE_PROGRESS_DIALOG) {
-				SystemUIUtil.showProgress(context, "Download", "Downloading Shoual application", new OnCancelListener() {
+				/*SystemUIUtil.showProgress(context, "Download", "Downloading Shoual application", new OnCancelListener() {
 
 					@Override
 					public void onCancel(DialogInterface dialog1) {
 						// TODO Auto-generated method stub
 
 					}
-				});
+				});*/
 			}
 
 			DependencyResolution dependencyResolution = dependencyResolutions.get(0);

@@ -6,6 +6,15 @@ import java.util.Map;
 
 public class Map2StringProperties {
 
+	public static class BadTypeException extends RuntimeException {
+		private BadTypeException(String message) {
+			super(message);
+		}
+		private BadTypeException(String message, Throwable cause) {
+			super(message, cause);
+		}
+	}
+
 	public static <KEY, E extends Enum<E>> E getEnumeration(Class<E> enumClass, KEY key, Map<KEY, String> map, E defaultz) {
 		return getEnumeration(enumClass, null, key, map, defaultz);
 	}
@@ -29,7 +38,7 @@ public class Map2StringProperties {
 		}
 
 		if (attributName != null) {
-			Field field;
+			final Field field;
 			try {
 				field = enumClass.getDeclaredField(attributName);
 			} catch (NoSuchFieldException nsfex) {
@@ -58,7 +67,7 @@ public class Map2StringProperties {
 			}
 		}
 
-		return null;
+		throw buildBadTypeException(stringValue, enumClass);
 	}
 
 
@@ -78,7 +87,8 @@ public class Map2StringProperties {
 			return true;
 		if (stringValue.toLowerCase(Locale.US).equals("false"))
 			return false;
-		return null;
+
+		throw buildBadTypeException(stringValue, Boolean.class);
 	}
 
 	public static <KEY> int getInteger(KEY key, Map<KEY, String> map, int defaultz) {
@@ -89,14 +99,14 @@ public class Map2StringProperties {
 	public static <KEY> Integer getInteger(KEY key, Map<KEY, String> map) {
 		if (!map.containsKey(key))
 			return null;
-		String stringValue = map.get(key);
+		final String stringValue = map.get(key);
 		if (stringValue == null) {
 			return null;
 		}
 		try {
 			return Integer.parseInt(stringValue);
 		} catch (NumberFormatException ex) {
-			return null;
+			throw buildBadTypeException(stringValue, Integer.class, ex);
 		}
 	}
 
@@ -115,7 +125,7 @@ public class Map2StringProperties {
 		try {
 			return Long.parseLong(stringValue);
 		} catch (NumberFormatException ex) {
-			return null;
+			throw buildBadTypeException(stringValue, Long.class, ex);
 		}
 	}
 
@@ -128,5 +138,16 @@ public class Map2StringProperties {
 		if (!map.containsKey(key))
 			return null;
 		return map.get(key);
+	}
+
+	private static BadTypeException buildBadTypeException(String value, Class<?> expectedType) {
+		return buildBadTypeException(value, expectedType, null);
+	}
+	private static BadTypeException buildBadTypeException(String value, Class<?> expectedType, Exception cause) {
+		final String message = "Cannot convert '"+value+"' into "+expectedType.getSimpleName();
+		if (cause != null)
+			return new BadTypeException(message, cause);
+		else
+			return new BadTypeException(message);
 	}
 }
