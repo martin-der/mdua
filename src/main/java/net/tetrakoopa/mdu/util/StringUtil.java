@@ -19,4 +19,24 @@ public class StringUtil {
         return escaped.toString().toCharArray();
     }
 
+	public static String byte2Hex(byte[] bytes) {
+		return byte2Hex(bytes, " ");
+	}
+	public static String byte2Hex(byte[] bytes, String twoBytesSeparator) {
+		final StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		for (int i = 0; i < bytes.length; i++) {
+			if (first) {
+				first = false;
+			} else if (twoBytesSeparator != null) {
+				sb.append(twoBytesSeparator);
+			}
+			int b = bytes[i] & 0xff;
+			if (b < 0x10)
+				sb.append('0');
+			sb.append(Integer.toHexString(b));
+		}
+		return sb.toString();
+	}
+
 }
