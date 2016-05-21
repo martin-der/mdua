@@ -39,4 +39,12 @@ public class StringUtilTest {
 		assertEquals("A", majusculeString);
 	}
 
+	@Test
+	public void convertSomeCamel2_SOME_CAMEL() {
+		String string = "MushroomCookingHelper";
+		String UPPER_STRING = StringUtil.camelCase2UpperCaseUnderscoreSeparated(string);
+
+		assertEquals("MUSHROOM_COOKING_HELPER", UPPER_STRING);
+	}
+
 }

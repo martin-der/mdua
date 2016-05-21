@@ -52,4 +52,14 @@ public class StringUtil {
 		return sb.toString();
 	}
 
+	public static String camelCase2UpperCaseUnderscoreSeparated(String string) {
+		return camelCase2UnderscoreSeparated(string, true);
+	}
+	public static String camelCase2UnderscoreSeparated(String string, boolean upper) {
+		final String regex = "([a-z])([A-Z]+)";
+		final String replacement = "$1_$2";
+		final String separated =  string.replaceAll(regex, replacement);
+		return upper ? separated.toUpperCase() : separated.toLowerCase();
+	}
+
 }
