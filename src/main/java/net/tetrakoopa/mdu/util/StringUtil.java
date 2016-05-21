@@ -2,6 +2,19 @@ package net.tetrakoopa.mdu.util;
 
 public class StringUtil {
 
+	public static String firstCharToUpperCase(String string) {
+		if (string == null) {
+			return null;
+		}
+		if (string.length()>0) {
+			final StringBuffer majusculeString = new StringBuffer();
+			majusculeString.append(Character.toUpperCase(string.charAt(0)));
+			majusculeString.append(string.substring(1));
+			return majusculeString.toString();
+		} else {
+			return string;
+		}
+	}
     public static char[] escapeRegex(char string[]) {
         final StringBuffer escaped = new StringBuffer();
         final int len = string.length;

@@ -14,4 +14,29 @@ public class StringUtilTest {
 		assertEquals("ff 49 b1 5e", bytesString);
 
 	}
+
+	@Test
+	public void majuscule() {
+		String string = "hello";
+		String majusculeString = StringUtil.firstCharToUpperCase(string);
+
+		assertEquals("Hello", majusculeString);
+	}
+
+	@Test
+	public void majusculeEmpty() {
+		String string = "";
+		String majusculeString = StringUtil.firstCharToUpperCase(string);
+
+		assertEquals("", majusculeString);
+	}
+
+	@Test
+	public void majusculeSingleChar() {
+		String string = "a";
+		String majusculeString = StringUtil.firstCharToUpperCase(string);
+
+		assertEquals("A", majusculeString);
+	}
+
 }
