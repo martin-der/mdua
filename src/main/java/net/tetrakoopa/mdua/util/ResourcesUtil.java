@@ -1,0 +1,22 @@
+package net.tetrakoopa.mdua.util;
+
+import android.content.Context;
+
+public class ResourcesUtil {
+	
+	public static String getString(Context context, int stringId) {
+		return context.getResources().getString(stringId);
+	}
+	public static String getStringf(Context context, int stringId, Object... objects) {
+		final String fmt = getString(context, stringId);
+		if (fmt == null)
+			return null;
+		return String.format(fmt, objects);
+	}
+
+	public static String getNamefromId(Context context, int id) {
+		return "android.resource://"+context.getPackageName() +"/"+id;
+	}
+
+
+}
