@@ -131,19 +131,19 @@ public class MappingHelper<BEAN> {
 		final AttributeMapping mapping = mappings.get(name);
 		if (mapping == null)
 			throw buildNoSuchAttributeException(name);
-		try {
 			return get(mapping, bean);
+	}
+	protected Object get(AttributeMapping mapping, BEAN bean) {
+		try {
+			if (mapping.getter != null) {
+				return mapping.getter.invoke(bean);
+			} else {
+				return mapping.readerWriter.get(bean);
+			}
 		} catch (IllegalAccessException iaex) {
 			throw  new MappingException(iaex.getMessage(), iaex);
 		} catch (InvocationTargetException itex) {
 			throw  new MappingException(itex.getMessage(), itex);
-		}
-	}
-	protected Object get(AttributeMapping mapping, BEAN bean) throws InvocationTargetException, IllegalAccessException {
-		if (mapping.getter != null) {
-			return mapping.getter.invoke(bean);
-		} else {
-			return mapping.readerWriter.get(bean);
 		}
 	}
 
