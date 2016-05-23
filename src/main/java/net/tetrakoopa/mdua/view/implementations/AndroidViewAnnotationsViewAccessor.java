@@ -11,10 +11,12 @@ public class AndroidViewAnnotationsViewAccessor extends AbstractViewAnnotationsV
 
 	@Override
 	public View findElement(View view, UIElement uiElement) throws IllegalViewMappingException {
-		View element = view.findViewById(uiElement.targetId());
-		if (element == null)
-			throw new IllegalViewMappingException("No element with id '" + uiElement.targetId() + "(internal value) was found in the view");
-		return element;
+		for (int id : uiElement.value()) {
+			final View element = view.findViewById(id);
+			if (element != null)
+				return element;
+		}
+			throw new IllegalViewMappingException("No element with id '" + uiElement.value() + "(internal value) was found in the view");
 	}
 
 
