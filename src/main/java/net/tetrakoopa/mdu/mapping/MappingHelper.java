@@ -13,15 +13,24 @@ public class MappingHelper<BEAN> {
 
 	protected static class AttributeMapping {
 
-		private Field readerWriter;
-		private Method getter;
-		private Method setter;
+		public final Field readerWriter;
+		public final Method getter;
+		public final Method setter;
+
+		private AttributeMapping(Field readerWriter, Method getter, Method setter) {
+			this.readerWriter = readerWriter;
+			this.getter = getter;
+			this.setter = setter;
+		}
 
 	}
 
 	public static class MappingException extends RuntimeException {
 		public MappingException(String message) {
 			super(message);
+		}
+		public MappingException(String message, Throwable cause) {
+			super(message, cause);
 		}
 	}
 
@@ -42,21 +51,21 @@ public class MappingHelper<BEAN> {
 				final Class<?> attributeType = field.getType();
 
 				final int modifiers = field.getModifiers();
-				final AttributeMapping mapping = new AttributeMapping();
 				if (Modifier.isPublic(modifiers)) {
-					mapping.readerWriter = field;
 					if (writeEnabled) {
 						if (Modifier.isFinal(modifiers)) {
-							throw new MappingException(faultingAttribute(name)+" cannot be set since its public field is final");
+							throw new MappingException(faultingAttribute(name)+" won't be settable since its public field is final");
 						}
 					}
-					mappings.put(name, mapping);
+					mappings.put(name, new AttributeMapping(field, null, null));
 					return;
 				}
 
 				final boolean isPrimitiveBoolean = boolean.class.equals(attributeType);
 				final String gettterName = getterName(name, isPrimitiveBoolean);
 				final String settterName = writeEnabled ? setterName(name) : null;
+				Method getter = null;
+				Method setter = null;
 
 				for (Method method : beanClass.getDeclaredMethods()) {
 					final int methodModifiers = method.getModifiers();
@@ -67,7 +76,7 @@ public class MappingHelper<BEAN> {
 						if (!Modifier.isPublic(methodModifiers)) {
 							throw new MappingException(faultingAttribute(name)+" have a getter ( '"+gettterName+"' ) but is not public");
 						}
-						mapping.getter = method;
+						getter = method;
 					}
 
 					if (settterName != null) {
@@ -79,13 +88,13 @@ public class MappingHelper<BEAN> {
 							if (!Modifier.isPublic(methodModifiers)) {
 								throw new MappingException(faultingAttribute(name)+" have a setter ( '"+settterName+"' ) but is not public");
 							}
-							mapping.setter = method;
+							setter = method;
 						}
 					}
 				}
 
-				if (mapping.getter != null && (mapping.setter != null || !writeEnabled)) {
-					mappings.put(name, mapping);
+				if (getter != null && (setter != null || !writeEnabled)) {
+					mappings.put(name, new AttributeMapping(field, getter, setter));
 					return;
 				}
 
@@ -99,24 +108,36 @@ public class MappingHelper<BEAN> {
 		throw new MappingException(faultingAttribute(name)+" does not exist");
 	}
 
-	public void set(String name, BEAN bean, Object value) throws InvocationTargetException, IllegalAccessException {
+	public void set(String name, BEAN bean, Object value) {
 		final AttributeMapping mapping = mappings.get(name);
 		if (mapping == null)
 			throw buildNoSuchAttributeException(name);
 		set(mapping, bean, value);
 	}
-	protected void set(AttributeMapping mapping, BEAN bean, Object value) throws InvocationTargetException, IllegalAccessException {
-		if (mapping.setter != null) {
-			mapping.setter.invoke(bean, value);
-		} else {
-			mapping.readerWriter.set(bean, value);
+	protected void set(AttributeMapping mapping, BEAN bean, Object value) {
+		try {
+			if (mapping.setter != null) {
+				mapping.setter.invoke(bean, value);
+			} else {
+				mapping.readerWriter.set(bean, value);
+			}
+		} catch (IllegalAccessException iaex) {
+			throw  new MappingException(iaex.getMessage(), iaex);
+		} catch (InvocationTargetException itex) {
+			throw  new MappingException(itex.getMessage(), itex);
 		}
 	}
-	public Object get(String name, BEAN bean) throws InvocationTargetException, IllegalAccessException {
+	public Object get(String name, BEAN bean) {
 		final AttributeMapping mapping = mappings.get(name);
 		if (mapping == null)
 			throw buildNoSuchAttributeException(name);
-		return get(mapping, bean);
+		try {
+			return get(mapping, bean);
+		} catch (IllegalAccessException iaex) {
+			throw  new MappingException(iaex.getMessage(), iaex);
+		} catch (InvocationTargetException itex) {
+			throw  new MappingException(itex.getMessage(), itex);
+		}
 	}
 	protected Object get(AttributeMapping mapping, BEAN bean) throws InvocationTargetException, IllegalAccessException {
 		if (mapping.getter != null) {
