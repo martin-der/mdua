@@ -208,6 +208,44 @@ public class SystemUIUtil {
 		return builder;
 	}
 
+	private static AlertDialog.Builder createInputDialogBuilderWithoutMessage(final Context context, String titre, String action, final DialogInterface.OnClickListener onClickListener, int iconId, Object bean, String... attributes) {
+
+		final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+		builder.setCancelable(true)
+			.setPositiveButton(action, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+					if (onClickListener != null) {
+						onClickListener.onClick(dialog, id);
+					}
+				}
+			})
+			.setNegativeButton(ResourcesUtil.getString(context, android.R.string.cancel), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+				dialog.cancel();
+				if (onClickListener != null) {
+					onClickListener.onClick(dialog, id);
+				}
+				}
+			});
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+						@Override
+						public void onDismiss(DialogInterface dialog) {
+				if (onClickListener != null) {
+					onClickListener.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
+				}
+				}
+			});
+		}
+
+		builder.setTitle(titre);
+		if (iconId != 0)
+			builder.setIcon(iconId);
+
+		return builder;
+	}
 
 	public static ProgressDialog showProgress(Context context, final AsyncTask task, String titre, String message, final DialogInterface.OnCancelListener listener) {
 

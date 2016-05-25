@@ -162,4 +162,9 @@ public class MappingHelper<BEAN> {
 		return "Attribute '"+name+"' in "+beanClass.getName();
 	}
 
+	protected RuntimeException buildNoInformationException(String attribute) {
+		throw new RuntimeException("Attribute '"+attribute+"' in "+beanClass+" has no mapping configuration");
+	}
+
+
 }
