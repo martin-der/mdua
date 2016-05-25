@@ -1,6 +1,7 @@
 package net.tetrakoopa.mdu.mapping;
 
 import net.tetrakoopa.mdu.util.StringUtil;
+import net.tetrakoopa.mdua.view.mapping.annotation.UIElement;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -39,6 +40,15 @@ public class MappingHelper<BEAN> {
 
 	public MappingHelper(Class<BEAN> beanClass) {
 		this.beanClass = (Class<BEAN>) beanClass;
+		scanUIELements();
+	}
+
+	private void scanUIELements() {
+		for (Field field : beanClass.getDeclaredFields()) {
+			if (field.getAnnotation(UIElement.class) != null) {
+				addAttribute(field.getName());
+			}
+		}
 	}
 
 	public void addAttribute(String name) {
@@ -108,6 +118,9 @@ public class MappingHelper<BEAN> {
 		throw new MappingException(faultingAttribute(name)+" does not exist");
 	}
 
+	public Field getField(String name) {
+		return mappings.get(name).readerWriter;
+	}
 	public void set(String name, BEAN bean, Object value) {
 		final AttributeMapping mapping = mappings.get(name);
 		if (mapping == null)

@@ -21,10 +21,20 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LabelInputBuilder<BEAN> extends ViewMappingHelper<BEAN> {
+public class LabelInputBuilder<BEAN> extends AlertDialog.Builder {
 
-	public LabelInputBuilder(Class<BEAN> beanClass) {
-		super(beanClass);
+	private final ViewMappingHelper<BEAN> viewMappingHelper;
+
+	private final View rootView;
+
+	private String upperText;
+	private String lowerText;
+
+	public LabelInputBuilder(Context context, Class<BEAN> beanClass) {
+		super(context);
+		viewMappingHelper = new ViewMappingHelper(beanClass);
+		final LayoutInflater inflater = LayoutInflater.from(getContext());
+		rootView = inflater.inflate(R.layout.dialog_edit_bean, null);
 	}
 
 	public static class LabelProvider {
@@ -56,8 +66,7 @@ public class LabelInputBuilder<BEAN> extends ViewMappingHelper<BEAN> {
 		table.setLayoutParams(tableParams);
 		final TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
 		for (String attribute :  attributes) {
-			final AttributeMapping mapping = mappings.get(attribute);
-			final Field field = mapping.readerWriter;
+			final Field field = viewMappingHelper.getField(attribute);
 
 			TableRow tableRow = new TableRow(context);
 			tableRow.setLayoutParams(tableParams);
@@ -91,55 +100,78 @@ public class LabelInputBuilder<BEAN> extends ViewMappingHelper<BEAN> {
 		}
 	}
 
-	public void show(Context context, Object bean, String... attributes) {
-		final LayoutInflater inflater = LayoutInflater.from(context);
-		final View view = inflater.inflate(R.layout.dialog_edit_bean, null);
+	public AlertDialog.Builder setUpperText(int stringId, String... formatArgs) {
+		setUpperText(getContext().getResources().getString(stringId, formatArgs));
+		return this;
+	}
+	public AlertDialog.Builder setUpperText(int stringId) {
+		setUpperText(getContext().getResources().getString(stringId));
+		return this;
+	}
+	public AlertDialog.Builder setUpperText(String text) {
+		this.upperText = text;
+		return this;
+	}
+	public AlertDialog.Builder setLowerText(int stringId, String... formatArgs) {
+		setLowerText(getContext().getResources().getString(stringId, formatArgs));
+		return this;
+	}
+	public AlertDialog.Builder setLowerText(int stringId) {
+		setLowerText(getContext().getResources().getString(stringId));
+		return this;
+	}
+	public AlertDialog.Builder setLowerText(String text) {
+		this.lowerText = text;
+		return this;
+	}
+	public AlertDialog.Builder setAll(Object bean, String title, String action, final DialogInterface.OnClickListener onClickListener, int iconId, String... attributes) {
 
-		final TableLayout table = (TableLayout)view.findViewById(R.id.table);
+		final TableLayout table = (TableLayout)rootView.findViewById(R.id.table);
 
 		populate(table, bean, null, null, attributes);
 
-		final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-		String titre = "titre";
-		int iconId = 0;
-		final DialogInterface.OnClickListener onClickListener = null;
-
-		builder.setCancelable(true)
-				.setPositiveButton("action_modify", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-						if (onClickListener != null) {
-							onClickListener.onClick(dialog, id);
-						}
+		this.setCancelable(true)
+			.setPositiveButton(action, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+					if (onClickListener != null) {
+						onClickListener.onClick(dialog, id);
 					}
-				})
-				.setNegativeButton(ResourcesUtil.getString(context, android.R.string.cancel), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-						if (onClickListener != null) {
-							onClickListener.onClick(dialog, id);
-						}
+				}
+			})
+			.setNegativeButton(ResourcesUtil.getString(getContext(), android.R.string.cancel), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+					if (onClickListener != null) {
+						onClickListener.onClick(dialog, id);
 					}
-				});
+				}
+			});
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-			builder
-					.setOnDismissListener(new DialogInterface.OnDismissListener() {
-						@Override
-						public void onDismiss(DialogInterface dialog) {
-							if (onClickListener != null) {
-								onClickListener.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
-							}
-						}
-					});
+			this.setOnDismissListener(new DialogInterface.OnDismissListener() {
+					@Override
+					public void onDismiss(DialogInterface dialog) {
+					if (onClickListener != null) {
+						onClickListener.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
+					}
+				}
+			});
 		}
 
-		builder.setTitle(titre);
+		this.setTitle(title);
 		if (iconId != 0)
-			builder.setIcon(iconId);
+			this.setIcon(iconId);
 
-		builder.show();
-
+		return this;
 	}
+
+	public AlertDialog show() {
+		if (upperText!=null)
+			((TextView)rootView.findViewById(R.id.upper_text)).setText(upperText);
+		if (lowerText!=null)
+			((TextView)rootView.findViewById(R.id.lower_text)).setText(lowerText);
+		return super.show();
+	}
+
 
 }
