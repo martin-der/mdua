@@ -5,7 +5,7 @@ import android.view.View;
 import net.tetrakoopa.mdu.mapping.MappingHelper;
 import net.tetrakoopa.mdua.view.mapping.annotation.UIElement;
 
-public class ViewMappingHelper<BEAN> extends MappingHelper<BEAN> {
+public class ViewMappingHelper<BEAN> extends MappingHelper<BEAN, View> {
 
 	public ViewMappingHelper(Class<BEAN> beanClass) {
 		super(beanClass);

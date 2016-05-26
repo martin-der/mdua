@@ -28,6 +28,8 @@ public class LabelInputBuilder<BEAN> extends AlertDialog.Builder {
 	private String upperText;
 	private String lowerText;
 
+	private String attributes[];
+
 	public LabelInputBuilder(Context context, Class<BEAN> beanClass) {
 		super(context);
 		viewMappingHelper = new ViewMappingHelper(beanClass);
@@ -58,12 +60,12 @@ public class LabelInputBuilder<BEAN> extends AlertDialog.Builder {
 		END_OF_LINE, UNDER_FIELD, HINT
 	}
 
-	public void populate ( TableLayout table, Object bean, ValidationLocation validation, LabelProvider labelProvider, String... attributes ) {
+	public void populate ( TableLayout table, BEAN bean, ValidationLocation validation, LabelProvider labelProvider, String... attributes ) {
 		final Context context = table.getContext();
 		final TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
 		table.setLayoutParams(tableParams);
 		final TableRow.LayoutParams labelRowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-		final TableRow.LayoutParams editRowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+		final TableRow.LayoutParams editRowParams = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
 		for (String attribute :  attributes) {
 			final Field field = viewMappingHelper.getField(attribute);
 
@@ -98,6 +100,12 @@ public class LabelInputBuilder<BEAN> extends AlertDialog.Builder {
 			textView.setLayoutParams(editRowParams);
 			row.addView(editText);
 
+			final Object value = viewMappingHelper.get(attribute, bean);
+			if (value != null)
+				editText.setText(value.toString());
+
+			viewMappingHelper.setView(attribute, editText);
+
 			table.addView(row);
 		}
 
@@ -127,7 +135,9 @@ public class LabelInputBuilder<BEAN> extends AlertDialog.Builder {
 		this.lowerText = text;
 		return this;
 	}
-	public AlertDialog.Builder setAll(Object bean, String action, final LabelProvider labelProvider, final DialogInterface.OnClickListener onClickListener, String... attributes) {
+	public AlertDialog.Builder setAll(final BEAN bean, String action, final LabelProvider labelProvider, final DialogInterface.OnClickListener onClickListener, final String... attributes) {
+
+		this.attributes = attributes;
 
 		final TableLayout table = (TableLayout)rootView.findViewById(R.id.table);
 
@@ -137,6 +147,7 @@ public class LabelInputBuilder<BEAN> extends AlertDialog.Builder {
 			.setPositiveButton(action, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 				dialog.cancel();
+				copyViewToBean(bean, attributes);
 				if (onClickListener != null) {
 					onClickListener.onClick(dialog, id);
 				}
@@ -164,11 +175,19 @@ public class LabelInputBuilder<BEAN> extends AlertDialog.Builder {
 		return this;
 	}
 
+	protected void copyViewToBean(BEAN bean, String... attributes) {
+		for (String  attribute : attributes) {
+			final View view = (View)viewMappingHelper.getView(attribute);
+			viewMappingHelper.set(attribute, bean, ((EditText)view).getText().toString());
+		}
+	}
+
 	public AlertDialog show() {
 		if (upperText!=null)
 			((TextView)rootView.findViewById(R.id.upper_text)).setText(upperText);
 		if (lowerText!=null)
 			((TextView)rootView.findViewById(R.id.lower_text)).setText(lowerText);
+
 		return super.show();
 	}
 

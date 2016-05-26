@@ -10,13 +10,14 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MappingHelper<BEAN> {
+public class MappingHelper<BEAN, VIEW> {
 
-	protected static class AttributeMapping {
+	protected static class AttributeMapping<VIEW> {
 
 		public final Field readerWriter;
 		public final Method getter;
 		public final Method setter;
+		public VIEW view;
 
 		private AttributeMapping(Field readerWriter, Method getter, Method setter) {
 			this.readerWriter = readerWriter;
@@ -116,6 +117,19 @@ public class MappingHelper<BEAN> {
 		}
 
 		throw new MappingException(faultingAttribute(name)+" does not exist");
+	}
+
+	public VIEW getView(String name) {
+		final AttributeMapping<VIEW> mapping = mappings.get(name);
+		if (mapping == null)
+			throw buildNoSuchAttributeException(name);
+		return mapping.view;
+	}
+	public void setView(String name, VIEW view) {
+		final AttributeMapping<VIEW> mapping = mappings.get(name);
+		if (mapping == null)
+			throw buildNoSuchAttributeException(name);
+		mapping.view = view;
 	}
 
 	public Field getField(String name) {
