@@ -11,11 +11,9 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import net.tetrakoopa.mdu.mapping.MappingHelper;
 import net.tetrakoopa.mdua.R;
 import net.tetrakoopa.mdua.util.ResourcesUtil;
 import net.tetrakoopa.mdua.view.mapping.annotation.Label;
-import net.tetrakoopa.mdua.view.mapping.annotation.UIElement;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -35,11 +33,12 @@ public class LabelInputBuilder<BEAN> extends AlertDialog.Builder {
 		viewMappingHelper = new ViewMappingHelper(beanClass);
 		final LayoutInflater inflater = LayoutInflater.from(getContext());
 		rootView = inflater.inflate(R.layout.dialog_edit_bean, null);
+		setView(rootView);
 	}
 
 	public static class LabelProvider {
 		private Map<String, String> labels;
-		public String tranform(String label) { return label; }
+		public String transform(String label) { return label; }
 
 		public boolean containsLabel(String name) {	
 			return labels != null && labels.containsKey(name);
@@ -53,7 +52,6 @@ public class LabelInputBuilder<BEAN> extends AlertDialog.Builder {
 				labels = new HashMap<>();
 			return labels.put(name, label);
 		}
-		
 	}
 
 	public enum ValidationLocation {
@@ -64,12 +62,14 @@ public class LabelInputBuilder<BEAN> extends AlertDialog.Builder {
 		final Context context = table.getContext();
 		final TableLayout.LayoutParams tableParams = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
 		table.setLayoutParams(tableParams);
-		final TableRow.LayoutParams rowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+		final TableRow.LayoutParams labelRowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+		final TableRow.LayoutParams editRowParams = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
 		for (String attribute :  attributes) {
 			final Field field = viewMappingHelper.getField(attribute);
 
-			TableRow tableRow = new TableRow(context);
-			tableRow.setLayoutParams(tableParams);
+			final TableRow row = new TableRow(context);
+			//tableRow.setLayoutParams(tableParams);
+			row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
 
 			String label = null;
 			if ( labelProvider != null ) {
@@ -86,18 +86,21 @@ public class LabelInputBuilder<BEAN> extends AlertDialog.Builder {
 				label = field.getName();
 			}
 			if ( labelProvider != null )
-				label = labelProvider.tranform(label);
+				label = labelProvider.transform(label);
 
 
 			final TextView textView = new TextView(context);
 			textView.setText(label);
-			textView.setLayoutParams(rowParams);
-
+			textView.setLayoutParams(labelRowParams);
+			row.addView(textView);
 
 			final EditText editText = new EditText(context);
+			textView.setLayoutParams(editRowParams);
+			row.addView(editText);
 
-			tableRow.addView(textView);
+			table.addView(row);
 		}
+
 	}
 
 	public AlertDialog.Builder setUpperText(int stringId, String... formatArgs) {
@@ -124,43 +127,39 @@ public class LabelInputBuilder<BEAN> extends AlertDialog.Builder {
 		this.lowerText = text;
 		return this;
 	}
-	public AlertDialog.Builder setAll(Object bean, String title, String action, final DialogInterface.OnClickListener onClickListener, int iconId, String... attributes) {
+	public AlertDialog.Builder setAll(Object bean, String action, final LabelProvider labelProvider, final DialogInterface.OnClickListener onClickListener, String... attributes) {
 
 		final TableLayout table = (TableLayout)rootView.findViewById(R.id.table);
 
-		populate(table, bean, null, null, attributes);
+		populate(table, bean, null, labelProvider, attributes);
 
 		this.setCancelable(true)
 			.setPositiveButton(action, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-					if (onClickListener != null) {
-						onClickListener.onClick(dialog, id);
-					}
+				dialog.cancel();
+				if (onClickListener != null) {
+					onClickListener.onClick(dialog, id);
+				}
 				}
 			})
 			.setNegativeButton(ResourcesUtil.getString(getContext(), android.R.string.cancel), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
-					if (onClickListener != null) {
-						onClickListener.onClick(dialog, id);
-					}
+			dialog.cancel();
+				if (onClickListener != null) {
+					onClickListener.onClick(dialog, id);
+				}
 				}
 			});
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
 			this.setOnDismissListener(new DialogInterface.OnDismissListener() {
 					@Override
 					public void onDismiss(DialogInterface dialog) {
-					if (onClickListener != null) {
-						onClickListener.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
-					}
+				if (onClickListener != null) {
+					onClickListener.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
+				}
 				}
 			});
 		}
-
-		this.setTitle(title);
-		if (iconId != 0)
-			this.setIcon(iconId);
 
 		return this;
 	}

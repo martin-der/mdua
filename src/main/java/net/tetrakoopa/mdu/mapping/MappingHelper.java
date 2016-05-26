@@ -119,7 +119,10 @@ public class MappingHelper<BEAN> {
 	}
 
 	public Field getField(String name) {
-		return mappings.get(name).readerWriter;
+		final AttributeMapping mapping = mappings.get(name);
+		if (mapping == null)
+			throw buildNoSuchAttributeException(name);
+		return mapping.readerWriter;
 	}
 	public void set(String name, BEAN bean, Object value) {
 		final AttributeMapping mapping = mappings.get(name);
