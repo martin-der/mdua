@@ -41,6 +41,10 @@ public class ActivityDelegator {
 
 			}
 
+			public String getFilename(Context context, Uri uri) {
+				return ResourcesUtil.getFilenamefromUri(context, uri);
+			}
+
 		}
 	}
 
