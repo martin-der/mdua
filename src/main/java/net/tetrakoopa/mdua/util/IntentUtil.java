@@ -10,17 +10,15 @@ import java.io.Serializable;
 
 public class IntentUtil {
 
+	@Deprecated
 	public static void shareText(Context context, int title, String subject, String content) {
-		shareText(context, context.getResources().getString(title), subject, content);
+		ActivityDelegator.shareText(context, title, subject, content);
 	}
+	@Deprecated
 	public static void shareText(Context context, String title, String subject, String content) {
-		final Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-		sharingIntent.setType("text/plain");
-		if (subject!=null)
-			sharingIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-		sharingIntent.putExtra(Intent.EXTRA_TEXT, content);
-		context.startActivity(Intent.createChooser(sharingIntent, title));
+		ActivityDelegator.shareText(context, title, subject, content);
 	}
+
 
 	/**
 	 * Copy action and type from <code>source</code> intent to <code>destination</code> intent.<br/>
