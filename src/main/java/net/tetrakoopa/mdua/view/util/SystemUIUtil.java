@@ -123,7 +123,7 @@ public class SystemUIUtil {
 			dontShowAgainCheckBox = null;
 		}
 
-		builder.setCancelable(false)
+		builder.setCancelable(true)
 				.setPositiveButton(ResourcesUtil.getString(context, android.R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						if (dontShowAgain != null) {
