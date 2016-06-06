@@ -1,7 +1,7 @@
 package net.tetrakoopa.mdua.util;
 
 
-public class ReflexionUtil {
+public class ReflectionUtil {
 
 	public static Class<?> inboxIfPrimitive(Class<?> clazz) {
 		if (!clazz.isPrimitive())
