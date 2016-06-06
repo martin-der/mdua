@@ -25,20 +25,26 @@ public class ResourcesUtil {
 	/**
 	 * @param context can be null is <code>uri.scheme</code> is 'file'
 	 */
-	public static String getFilenamefromUri(Context context, Uri uri) {
+	public static String getPathFromUri(Context context, Uri uri) {
 		final String scheme = uri.getScheme();
 		if (scheme.equals("file")) {
-			return uri.getLastPathSegment();
+			return uri.getPath();
 		}
 		if (scheme.equals("content")) {
-			final String[] proj = { MediaStore.Images.Media.TITLE };
-			final Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
+			final String[] projection = { MediaStore.Images.Media.DATA };
+			final Cursor cursor;
+			try {
+				cursor = context.getContentResolver().query(uri, projection, null, null, null);
+			} catch (java.lang.IllegalArgumentException iaex) {
+				return null;
+			}
 			try {
 				if (cursor != null && cursor.getCount() != 0) {
-					int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
+					int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
 					cursor.moveToFirst();
 					return cursor.getString(columnIndex);
 				}
+				throw new IllegalArgumentException("Could not find name for unknown Uri '"+uri+"'");
 			}
 			finally {
 				if (cursor != null) {
@@ -46,6 +52,39 @@ public class ResourcesUtil {
 				}
 			}
 		}
-		throw new IllegalStateException("Don't know how to retrieve filename from Uri whose scheme is '"+scheme+"'");
+		throw new IllegalArgumentException("Don't know how to retrieve filename from Uri whose scheme is '"+scheme+"'");
 	}
+	/**
+	 * @param context can be null is <code>uri.scheme</code> is 'file'
+	 */
+	public static String getNameFromUri(Context context, Uri uri) {
+		final String scheme = uri.getScheme();
+		if (scheme.equals("file")) {
+			return uri.getLastPathSegment();
+		}
+		if (scheme.equals("content")) {
+			final String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
+			final Cursor cursor;
+			try {
+				cursor = context.getContentResolver().query(uri, projection, null, null, null);
+			} catch (java.lang.IllegalArgumentException iaex) {
+				return null;
+			}
+			try {
+				if (cursor != null && cursor.getCount() != 0) {
+					int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+					cursor.moveToFirst();
+					return cursor.getString(columnIndex);
+				}
+				throw new IllegalArgumentException("Could not find name for unknown Uri '"+uri+"'");
+			}
+			finally {
+				if (cursor != null) {
+					cursor.close();
+				}
+			}
+		}
+		throw new IllegalArgumentException("Don't know how to retrieve filename from Uri whose scheme is '"+scheme+"'");
+	}
+
 }
