@@ -2,6 +2,8 @@ package net.tetrakoopa.mdua.view.util;
 
 import net.tetrakoopa.mdua.R;
 import net.tetrakoopa.mdua.util.ResourcesUtil;
+import net.tetrakoopa.mdua.util.TextOrStringResource;
+
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -35,18 +37,30 @@ public class SystemUIUtil {
 		public String key;
 		public int mode;
         public boolean result;
+		private final TextOrStringResource text;
+
 		public DontShowAgainLinkedToPreference(boolean defaultValue, String name, String key) {
-			this(defaultValue, name, key, Context.MODE_PRIVATE);
+			this(defaultValue, name, key, null, Context.MODE_PRIVATE);
 		}
 		public DontShowAgainLinkedToPreference(boolean defaultValue, String name, String key, int mode) {
+			this(defaultValue, name, key, null, mode);
+		}
+		public DontShowAgainLinkedToPreference(boolean defaultValue, String name, String key, TextOrStringResource text) {
+			this(defaultValue, name, key, text, Context.MODE_PRIVATE);
+		}
+		public DontShowAgainLinkedToPreference(boolean defaultValue, String name, String key, TextOrStringResource text, int mode) {
 			this.defaultValue = defaultValue; this.name = name; this.key = key;
 			this.mode = mode;
+			this.text = text;
 		}
 
 		public boolean getValue(Context context) {
 			final SharedPreferences settings = context.getSharedPreferences(name, mode);
 			return settings.getBoolean(key, defaultValue);
 		}
+		public String getText(Context context) {
+			return text.getText(context);
+		};
 	}
 
 
@@ -122,7 +136,11 @@ public class SystemUIUtil {
 			final View view = inflater.inflate(R.layout.dialog_ok_dontshow_checkbox, null);
 			dontShowAgainCheckBox = (CheckBox) view.findViewById(R.id.dont_show);
 			dontShowAgainCheckBox.setChecked(dontShowAgain.defaultValue);
-			dontShowAgainCheckBox.setText(values_R.strings.dont_show_again);
+			final String text = dontShowAgain.getText(context);
+			if (text != null)
+				dontShowAgainCheckBox.setText(text);
+			else
+				dontShowAgainCheckBox.setText(values_R.strings.dont_show_again);
 			builder.setView(view);
 		} else {
 			dontShowAgainCheckBox = null;
