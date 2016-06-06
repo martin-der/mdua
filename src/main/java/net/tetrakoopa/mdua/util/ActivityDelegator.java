@@ -42,23 +42,48 @@ public class ActivityDelegator {
 			}
 
 			public String getFilename(Context context, Uri uri) {
-				return ResourcesUtil.getFilenamefromUri(context, uri);
+				return ResourcesUtil.getNameFromUri(context, uri);
+			}
+			public String getPath(Context context, Uri uri) {
+				return ResourcesUtil.getPathFromUri(context, uri);
 			}
 
 		}
 	}
 
-	public static void pickContent(Activity activity, String type, boolean multiple, int activityCode, int title) {
-		pickContent(activity, type, multiple, activityCode, activity.getResources().getString(title));
-	}
 	/**
-	 * @param type : can be null, defaults to '* /*'
+	 * Try to get a file path using <code>android.intent.action.GET_CONTENT</code> activity
+	 * @param type : can be <code>null</code>, defaults to '* /*'
+	 * @param startUri : can be <code>null</code>, a file URI for suggested file name or starting directory
+	 * @param title : can be <code>null</code>, message shown by activity
+	 * @param button : can be <code>null</code>, message shown be activity
 	 */
-	public static void pickContent(Activity activity, String type, boolean multiple, int activityCode, String title) {
+	public static void getContent(Activity activity, String type, boolean multiple, int activityCode, Uri startUri, String title, String button) {
 		final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 		// message(R.string.title_pick_file_to_share);
 		intent.setType(type == null ? "*/*" : type);
 		activity.startActivityForResult(intent, activityCode);
+	}
+
+	/**
+	 * Try to get a file path using <code>org.openintents.action.PICK_FILE</code> activity
+	 * @param type : can be <code>null</code>, defaults to '* /*'
+	 * @param startUri : can be <code>null</code>, a file URI for suggested file name or starting directory
+	 * @param title : can be <code>null</code>, message shown by activity
+	 * @param button : can be <code>null</code>, message shown be activity
+	 */
+	public static void pickContent(Activity activity, String type, boolean multiple, int activityCode, Uri startUri, String title, String button) {
+		Intent intent = new Intent("org.openintents.action.PICK_FILE");
+		if (startUri != null)
+			intent.setData(startUri);
+		if (title != null)
+			intent.putExtra("org.openintents.extra.TITLE", title); // String
+		if (button != null)
+			intent.putExtra("org.openintents.extra.BUTTON_TEXT", button); // String
+		activity.startActivityForResult(intent, activityCode);
+	}
+	public static void pickContent(Activity activity, String type, boolean multiple, int activityCode, Uri startUri, /*@LayoutRes*/ int title, /*@LayoutRes*/ int button) {
+		pickContent(activity, type, multiple, activityCode, startUri, activity.getResources().getString(title), activity.getResources().getString(button));
 	}
 
 	public static void handlePickActivityResponse(int resultCode, Intent data, OnPickContentActivityReturnHandler handler) {
