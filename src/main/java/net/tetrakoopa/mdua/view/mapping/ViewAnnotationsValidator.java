@@ -2,7 +2,7 @@ package net.tetrakoopa.mdua.view.mapping;
 
 import java.lang.reflect.Field;
 
-import net.tetrakoopa.mdua.util.ReflexionUtil;
+import net.tetrakoopa.mdua.util.ReflectionUtil;
 import net.tetrakoopa.mdua.view.mapping.annotation.UIElement;
 import net.tetrakoopa.mdua.view.mapping.annotation.validation.NotEmpty;
 import net.tetrakoopa.mdua.view.mapping.annotation.validation.NotNull;
@@ -44,7 +44,7 @@ public class ViewAnnotationsValidator<VIEW, VIEW_ELEMENT> extends AbstractScanne
 			if (uiElement == null)
 				continue;
 
-			final Class<?> type = ReflexionUtil.inboxIfPrimitive(field.getType());
+			final Class<?> type = ReflectionUtil.inboxIfPrimitive(field.getType());
 
 			final Object value;
 

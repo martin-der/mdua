@@ -2,7 +2,7 @@ package net.tetrakoopa.mdua.view.mapping;
 
 import java.lang.reflect.Field;
 
-import net.tetrakoopa.mdua.util.ReflexionUtil;
+import net.tetrakoopa.mdua.util.ReflectionUtil;
 import net.tetrakoopa.mdua.view.mapping.annotation.UIElement;
 import net.tetrakoopa.mdua.view.mapping.copy.BooleanMappingCopyProcessor;
 import net.tetrakoopa.mdua.view.mapping.copy.ByteMappingCopyProcessor;
@@ -66,7 +66,7 @@ public class ViewAnnotationsCopyProcessor<VIEW, VIEW_ELEMENT> extends AbstractSc
 	}
 	
 	private <VO> void assignElementViewToVO(UIElement uiElement, VO vo, VIEW_ELEMENT element, Field field) throws IllegalVOMappingException, BadValueException, IllegalViewMappingException {
-		Class<?> type = ReflexionUtil.inboxIfPrimitive(field.getType());
+		Class<?> type = ReflectionUtil.inboxIfPrimitive(field.getType());
 		
 		if (type.equals(java.lang.String.class)) {
 
@@ -121,7 +121,7 @@ public class ViewAnnotationsCopyProcessor<VIEW, VIEW_ELEMENT> extends AbstractSc
 	}
 	
 	private <VO> void assignElementVOToView(UIElement uiElement, VIEW_ELEMENT element, VO vo, Field field) throws IllegalVOMappingException, BadValueException, IllegalViewMappingException {
-		Class<?> type = ReflexionUtil.inboxIfPrimitive(field.getType());
+		Class<?> type = ReflectionUtil.inboxIfPrimitive(field.getType());
 
 		if (type.equals(java.lang.String.class)) {
 
