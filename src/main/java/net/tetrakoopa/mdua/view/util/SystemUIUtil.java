@@ -42,6 +42,11 @@ public class SystemUIUtil {
 			this.defaultValue = defaultValue; this.name = name; this.key = key;
 			this.mode = mode;
 		}
+
+		public boolean getValue(Context context) {
+			final SharedPreferences settings = context.getSharedPreferences(name, mode);
+			return settings.getBoolean(key, defaultValue);
+		}
 	}
 
 
