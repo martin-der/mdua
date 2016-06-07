@@ -135,7 +135,8 @@ public class SystemUIUtil {
 			final LayoutInflater inflater = LayoutInflater.from(context);
 			final View view = inflater.inflate(R.layout.dialog_ok_dontshow_checkbox, null);
 			dontShowAgainCheckBox = (CheckBox) view.findViewById(R.id.dont_show);
-			dontShowAgainCheckBox.setChecked(dontShowAgain.defaultValue);
+			dontShowAgain.result = context.getSharedPreferences(dontShowAgain.name, dontShowAgain.mode).getBoolean(dontShowAgain.key, dontShowAgain.defaultValue);
+			dontShowAgainCheckBox.setChecked(dontShowAgain.result);
 			final String text = dontShowAgain.getText(context);
 			if (text != null)
 				dontShowAgainCheckBox.setText(text);
@@ -153,9 +154,7 @@ public class SystemUIUtil {
 							dontShowAgain.result = dontShowAgainCheckBox.isChecked();
 							if (dontShowAgain.name != null && dontShowAgain.key != null) {
 								final SharedPreferences settings = context.getSharedPreferences(dontShowAgain.name, dontShowAgain.mode);
-								final SharedPreferences.Editor editor = settings.edit();
-								editor.putBoolean(dontShowAgain.key, dontShowAgain.result);
-								editor.commit();
+								settings.edit().putBoolean(dontShowAgain.key, dontShowAgain.result).commit();
 							}
 						}
 						if (onClickListener != null) {
