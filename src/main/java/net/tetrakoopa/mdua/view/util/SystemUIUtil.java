@@ -3,17 +3,14 @@ package net.tetrakoopa.mdua.view.util;
 import net.tetrakoopa.mdua.R;
 import net.tetrakoopa.mdua.SystemValues;
 import net.tetrakoopa.mdua.util.ResourcesUtil;
-import net.tetrakoopa.mdua.util.TextOrStringResource;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,56 +19,6 @@ import android.widget.CheckBox;
 import java.util.concurrent.Executor;
 
 public class SystemUIUtil {
-
-	public static class DontShowAgainLinkedToDefaultPreference extends DontShowAgainLinkedToPreference {
-
-		public DontShowAgainLinkedToDefaultPreference(boolean defaultValue, String key) {
-			this(defaultValue, key, null);
-		}
-		public DontShowAgainLinkedToDefaultPreference(boolean defaultValue, String key, TextOrStringResource text) {
-			super(defaultValue, null, key, text, Context.MODE_PRIVATE);
-		}
-
-		public boolean getValue(Context context) {
-			final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-			return settings.getBoolean(key, defaultValue);
-		}
-
-	}
-	public static class DontShowAgainLinkedToPreference {
-		public final boolean defaultValue;
-		public final String name;
-		public final String key;
-		public final int mode;
-        public boolean result;
-		private final TextOrStringResource text;
-
-		public DontShowAgainLinkedToPreference(boolean defaultValue, String name, String key) {
-			this(defaultValue, name, key, null, Context.MODE_PRIVATE);
-		}
-		public DontShowAgainLinkedToPreference(boolean defaultValue, String name, String key, int mode) {
-			this(defaultValue, name, key, null, mode);
-		}
-		public DontShowAgainLinkedToPreference(boolean defaultValue, String name, String key, TextOrStringResource text) {
-			this(defaultValue, name, key, text, Context.MODE_PRIVATE);
-		}
-		public DontShowAgainLinkedToPreference(boolean defaultValue, String name, String key, TextOrStringResource text, int mode) {
-			this.defaultValue = defaultValue; this.name = name; this.key = key;
-			this.mode = mode;
-			this.text = text;
-		}
-
-		public boolean getValue(Context context) {
-			/** WARNING : This assume default shared context is named <code>context.getPackageName() + "_preferences"</code> */
-			final String name = this.name != null ? this.name : context.getPackageName() + "_preferences";
-			final SharedPreferences settings = context.getSharedPreferences(name, mode);
-			return settings.getBoolean(key, defaultValue);
-		}
-		public String getText(Context context) {
-			return text.getText(context);
-		};
-	}
-
 
 	private SystemUIUtil() {
 	}
@@ -144,7 +91,7 @@ public class SystemUIUtil {
 			final LayoutInflater inflater = LayoutInflater.from(context);
 			final View view = inflater.inflate(R.layout.dialog_with_dontshow_checkbox, null);
 			dontShowAgainCheckBox = (CheckBox) view.findViewById(R.id.dont_show);
-			dontShowAgain.result = context.getSharedPreferences(dontShowAgain.name, dontShowAgain.mode).getBoolean(dontShowAgain.key, dontShowAgain.defaultValue);
+			dontShowAgain.result = dontShowAgain.getValue(context);
 			dontShowAgainCheckBox.setChecked(dontShowAgain.result);
 			final String text = dontShowAgain.getText(context);
 			if (text != null)
@@ -161,9 +108,8 @@ public class SystemUIUtil {
 					public void onClick(DialogInterface dialog, int id) {
 						if (dontShowAgain != null) {
 							dontShowAgain.result = dontShowAgainCheckBox.isChecked();
-							if (dontShowAgain.name != null && dontShowAgain.key != null) {
-								final SharedPreferences settings = context.getSharedPreferences(dontShowAgain.name, dontShowAgain.mode);
-								settings.edit().putBoolean(dontShowAgain.key, dontShowAgain.result).commit();
+							if (dontShowAgain.key != null) {
+								dontShowAgain.setValue(context, dontShowAgain.result);
 							}
 						}
 						if (onClickListener != null) {
@@ -227,7 +173,7 @@ public class SystemUIUtil {
 			final LayoutInflater inflater = LayoutInflater.from(context);
 			final View view = inflater.inflate(R.layout.dialog_with_dontshow_checkbox, null);
 			dontShowAgainCheckBox = (CheckBox) view.findViewById(R.id.dont_show);
-			dontShowAgain.result = context.getSharedPreferences(dontShowAgain.name, dontShowAgain.mode).getBoolean(dontShowAgain.key, dontShowAgain.defaultValue);
+			dontShowAgain.result = dontShowAgain.getValue(context);
 			dontShowAgainCheckBox.setChecked(dontShowAgain.result);
 			final String text = dontShowAgain.getText(context);
 			if (text != null)
@@ -243,18 +189,24 @@ public class SystemUIUtil {
 		builder.setCancelable(true)
 			.setPositiveButton(action, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
+					if (dontShowAgain != null) {
+						dontShowAgain.result = dontShowAgainCheckBox.isChecked();
+						if (dontShowAgain.key != null) {
+							dontShowAgain.setValue(context, dontShowAgain.result);
+						}
+					}
 					if (onClickListener != null) {
 						onClickListener.onClick(dialog, id);
 					}
+					dialog.cancel();
 				}
 			})
 			.setNegativeButton(ResourcesUtil.getString(context, android.R.string.cancel), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					dialog.cancel();
 					if (onClickListener != null) {
 						onClickListener.onClick(dialog, id);
 					}
+					dialog.cancel();
 				}
 			});
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
