@@ -13,6 +13,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +23,26 @@ import java.util.concurrent.Executor;
 
 public class SystemUIUtil {
 
+	public static class DontShowAgainLinkedToDefaultPreference extends DontShowAgainLinkedToPreference {
+
+		public DontShowAgainLinkedToDefaultPreference(boolean defaultValue, String key) {
+			this(defaultValue, key, null);
+		}
+		public DontShowAgainLinkedToDefaultPreference(boolean defaultValue, String key, TextOrStringResource text) {
+			super(defaultValue, null, key, text, Context.MODE_PRIVATE);
+		}
+
+		public boolean getValue(Context context) {
+			final SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+			return settings.getBoolean(key, defaultValue);
+		}
+
+	}
 	public static class DontShowAgainLinkedToPreference {
-		public boolean defaultValue;
-		public String name;
-		public String key;
-		public int mode;
+		public final boolean defaultValue;
+		public final String name;
+		public final String key;
+		public final int mode;
         public boolean result;
 		private final TextOrStringResource text;
 
@@ -46,6 +62,8 @@ public class SystemUIUtil {
 		}
 
 		public boolean getValue(Context context) {
+			/** WARNING : This assume default shared context is named <code>context.getPackageName() + "_preferences"</code> */
+			final String name = this.name != null ? this.name : context.getPackageName() + "_preferences";
 			final SharedPreferences settings = context.getSharedPreferences(name, mode);
 			return settings.getBoolean(key, defaultValue);
 		}
