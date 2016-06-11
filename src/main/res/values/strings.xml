@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">Mdua</string>
-
     <string name="mdua.dont_show_again">Don\'t show again</string>
     <string name="mdua.dont_ask_again">Don\'t ask again</string>
 	<string name="dont_show_again">Don\'t show again</string>
