@@ -1,6 +1,7 @@
 package net.tetrakoopa.mdua.view.util;
 
 import net.tetrakoopa.mdua.R;
+import net.tetrakoopa.mdua.SystemValues;
 import net.tetrakoopa.mdua.util.ResourcesUtil;
 import net.tetrakoopa.mdua.util.TextOrStringResource;
 
@@ -20,16 +21,6 @@ import android.widget.CheckBox;
 import java.util.concurrent.Executor;
 
 public class SystemUIUtil {
-
-	public static class Values {
-		public static class Strings {
-			public int dont_show_again = R.string.mdua_dont_show_again;
-			public int dont_ask_again = R.string.mdua_dont_ask_again;
-		}
-
-		public final Strings strings = new Strings();
-	}
-	public static final Values values_R = new Values();
 
 	public static class DontShowAgainLinkedToPreference {
 		public boolean defaultValue;
@@ -141,7 +132,7 @@ public class SystemUIUtil {
 			if (text != null)
 				dontShowAgainCheckBox.setText(text);
 			else
-				dontShowAgainCheckBox.setText(values_R.strings.dont_show_again);
+				dontShowAgainCheckBox.setText(SystemValues.R.string.dont_show_again);
 			builder.setView(view);
 		} else {
 			dontShowAgainCheckBox = null;
