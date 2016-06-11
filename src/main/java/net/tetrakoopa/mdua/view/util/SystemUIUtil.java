@@ -124,7 +124,7 @@ public class SystemUIUtil {
 
 		if (dontShowAgain != null) {
 			final LayoutInflater inflater = LayoutInflater.from(context);
-			final View view = inflater.inflate(R.layout.dialog_ok_dontshow_checkbox, null);
+			final View view = inflater.inflate(R.layout.dialog_with_dontshow_checkbox, null);
 			dontShowAgainCheckBox = (CheckBox) view.findViewById(R.id.dont_show);
 			dontShowAgain.result = context.getSharedPreferences(dontShowAgain.name, dontShowAgain.mode).getBoolean(dontShowAgain.key, dontShowAgain.defaultValue);
 			dontShowAgainCheckBox.setChecked(dontShowAgain.result);
@@ -164,26 +164,63 @@ public class SystemUIUtil {
 	}
 
 	public static void showActionCancelDialog(final Context context, String titre, String action, String message, final DialogInterface.OnClickListener onClickListener) {
-		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, onClickListener, 0);
+		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, null, onClickListener, 0);
 		builder.setMessage(message).show();
 	}
 	public static void showActionCancelHtmlDialog(final Context context, String titre, String action, String message, final DialogInterface.OnClickListener onClickListener) {
-		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, onClickListener, 0);
+		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, null, onClickListener, 0);
 		builder.setMessage(Html.fromHtml(message)).show();
 	}
 
 	public static void showActionCancelDialog(final Context context, String titre, String action, String message, final DialogInterface.OnClickListener onClickListener, int iconId) {
-		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, onClickListener, iconId);
+		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, null, onClickListener, iconId);
 		builder.setMessage(message).show();
 	}
 	public static void showActionCancelHtmlDialog(final Context context, String titre, String action, String message, final DialogInterface.OnClickListener onClickListener, int iconId) {
-		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, onClickListener, iconId);
+		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, null, onClickListener, iconId);
 		builder.setMessage(Html.fromHtml(message)).show();
 	}
 
-	private static AlertDialog.Builder createActionCancelDialogBuilderWithoutMessage(final Context context, String titre, String action, final DialogInterface.OnClickListener onClickListener, int iconId) {
+	public static void showActionCancelDialog(final Context context, String titre, String action, String message, final DontShowAgainLinkedToPreference dontShowAgain, final DialogInterface.OnClickListener onClickListener) {
+		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, dontShowAgain, onClickListener, 0);
+		builder.setMessage(message).show();
+	}
+	public static void showActionCancelHtmlDialog(final Context context, String titre, String action, String message, final DontShowAgainLinkedToPreference dontShowAgain, final DialogInterface.OnClickListener onClickListener) {
+		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, dontShowAgain, onClickListener, 0);
+		builder.setMessage(Html.fromHtml(message)).show();
+	}
+
+	public static void showActionCancelDialog(final Context context, String titre, String action, String message, final DontShowAgainLinkedToPreference dontShowAgain, final DialogInterface.OnClickListener onClickListener, int iconId) {
+		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, dontShowAgain, onClickListener, iconId);
+		builder.setMessage(message).show();
+	}
+	public static void showActionCancelHtmlDialog(final Context context, String titre, String action, String message, final DontShowAgainLinkedToPreference dontShowAgain, final DialogInterface.OnClickListener onClickListener, int iconId) {
+		final AlertDialog.Builder builder = createActionCancelDialogBuilderWithoutMessage(context, titre, action, dontShowAgain, onClickListener, iconId);
+		builder.setMessage(Html.fromHtml(message)).show();
+	}
+
+	private static AlertDialog.Builder createActionCancelDialogBuilderWithoutMessage(final Context context, String titre, String action, final DontShowAgainLinkedToPreference dontShowAgain, final DialogInterface.OnClickListener onClickListener, int iconId) {
 
 		final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+		final CheckBox dontShowAgainCheckBox;
+
+		if (dontShowAgain != null) {
+			final LayoutInflater inflater = LayoutInflater.from(context);
+			final View view = inflater.inflate(R.layout.dialog_with_dontshow_checkbox, null);
+			dontShowAgainCheckBox = (CheckBox) view.findViewById(R.id.dont_show);
+			dontShowAgain.result = context.getSharedPreferences(dontShowAgain.name, dontShowAgain.mode).getBoolean(dontShowAgain.key, dontShowAgain.defaultValue);
+			dontShowAgainCheckBox.setChecked(dontShowAgain.result);
+			final String text = dontShowAgain.getText(context);
+			if (text != null)
+				dontShowAgainCheckBox.setText(text);
+			else
+				dontShowAgainCheckBox.setText(SystemValues.R.string.dont_ask_again);
+			builder.setView(view);
+		} else {
+			dontShowAgainCheckBox = null;
+		}
+
 
 		builder.setCancelable(true)
 			.setPositiveButton(action, new DialogInterface.OnClickListener() {
