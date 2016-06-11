@@ -30,7 +30,7 @@ public class DevUtil {
 	}
 
 	public static void showException(final Context context, Throwable ex) {
-		SystemUIUtil.showOKDialog(context, "Oops!", ex.getMessage(), android.R.drawable.ic_dialog_alert, new DialogInterface.OnClickListener() {
+		SystemUIUtil.showOkDialog(context, "Oops!", ex.getMessage(), android.R.drawable.ic_dialog_alert, new DialogInterface.OnClickListener() {
 
 			@Override
 			public void onClick(DialogInterface dialog, int which) {

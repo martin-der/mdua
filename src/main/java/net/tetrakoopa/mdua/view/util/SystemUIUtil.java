@@ -67,49 +67,49 @@ public class SystemUIUtil {
 	private SystemUIUtil() {
 	}
 
-	public static void showOKDialog(Context context, String titre, String message) {
+	public static void showOkDialog(Context context, String titre, String message) {
 		showOkDialog(context, titre, message, null, null, 0);
 	}
 	public static void showOkHtmlDialog(Context context, String titre, String message) {
 		showOkHtmlDialog(context, titre, message, null, null, 0);
 	}
 
-	public static void showOKDialog(Context context, String titre, String message, DontShowAgainLinkedToPreference dontShowAgain) {
+	public static void showOkDialog(Context context, String titre, String message, DontShowAgainLinkedToPreference dontShowAgain) {
 		showOkDialog(context, titre, message, dontShowAgain, null, 0);
 	}
 	public static void showOkHtmlDialog(Context context, String titre, String message, DontShowAgainLinkedToPreference dontShowAgain) {
 		showOkHtmlDialog(context, titre, message, dontShowAgain, null, 0);
 	}
 
-	public static void showOKDialog(Context context, String titre, String message, int iconId) {
+	public static void showOkDialog(Context context, String titre, String message, int iconId) {
 		showOkDialog(context, titre, message, null, null, iconId);
 	}
 	public static void showOkHtmlDialog(Context context, String titre, String message, int iconId) {
 		showOkHtmlDialog(context, titre, message, null, null, iconId);
 	}
 
-	public static void showOKDialog(Context context, String titre, String message, DontShowAgainLinkedToPreference dontShowAgain, int iconId) {
+	public static void showOkDialog(Context context, String titre, String message, DontShowAgainLinkedToPreference dontShowAgain, int iconId) {
 		showOkDialog(context, titre, message, dontShowAgain, null, iconId);
 	}
 	public static void showOKHtmlDialog(Context context, String titre, String message, DontShowAgainLinkedToPreference dontShowAgain, int iconId) {
 		showOkHtmlDialog(context, titre, message, dontShowAgain, null, iconId);
 	}
 
-	public static void showOKDialog(Context context, String titre, String message, DialogInterface.OnClickListener onClickListener) {
+	public static void showOkDialog(Context context, String titre, String message, DialogInterface.OnClickListener onClickListener) {
 		showOkDialog(context, titre, message, null, onClickListener, 0);
 	}
 	public static void showOKHtmlDialog(Context context, String titre, String message, DialogInterface.OnClickListener onClickListener) {
 		showOkHtmlDialog(context, titre, message, null, onClickListener, 0);
 	}
 
-	public static void showOKDialog(Context context, String titre, String message, int iconId, DialogInterface.OnClickListener onClickListener) {
+	public static void showOkDialog(Context context, String titre, String message, int iconId, DialogInterface.OnClickListener onClickListener) {
 		showOkDialog(context, titre, message, null, onClickListener, iconId);
 	}
 	public static void showOkHtmlDialog(Context context, String titre, String message, int iconId, DialogInterface.OnClickListener onClickListener) {
 		showOkHtmlDialog(context, titre, message, null, onClickListener, iconId);
 	}
 
-	public static void showOKDialog(Context context, String titre, String message, DontShowAgainLinkedToPreference dontShowAgain, final DialogInterface.OnClickListener onClickListener) {
+	public static void showOkDialog(Context context, String titre, String message, DontShowAgainLinkedToPreference dontShowAgain, final DialogInterface.OnClickListener onClickListener) {
 		showOkDialog(context, titre, message, dontShowAgain, onClickListener, 0);
 	}
 	public static void showOKHtmlDialog(Context context, String titre, String message, DontShowAgainLinkedToPreference dontShowAgain, final DialogInterface.OnClickListener onClickListener) {
