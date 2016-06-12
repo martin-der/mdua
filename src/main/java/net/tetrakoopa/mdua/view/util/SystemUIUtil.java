@@ -91,8 +91,8 @@ public class SystemUIUtil {
 			final LayoutInflater inflater = LayoutInflater.from(context);
 			final View view = inflater.inflate(R.layout.dialog_with_dontshow_checkbox, null);
 			dontShowAgainCheckBox = (CheckBox) view.findViewById(R.id.dont_show);
-			dontShowAgain.result = dontShowAgain.getValue(context);
-			dontShowAgainCheckBox.setChecked(dontShowAgain.result);
+			final boolean actualValue = dontShowAgain.getValue(context);
+			dontShowAgainCheckBox.setChecked(dontShowAgain.getViewValue(actualValue));
 			final String text = dontShowAgain.getText(context);
 			if (text != null)
 				dontShowAgainCheckBox.setText(text);
@@ -107,9 +107,9 @@ public class SystemUIUtil {
 				.setPositiveButton(ResourcesUtil.getString(context, android.R.string.ok), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						if (dontShowAgain != null) {
-							dontShowAgain.result = dontShowAgainCheckBox.isChecked();
+							final boolean result = dontShowAgain.getViewValue(dontShowAgainCheckBox.isChecked());
 							if (dontShowAgain.key != null) {
-								dontShowAgain.setValue(context, dontShowAgain.result);
+								dontShowAgain.setValue(context, result);
 							}
 						}
 						if (onClickListener != null) {
@@ -169,12 +169,14 @@ public class SystemUIUtil {
 
 		final CheckBox dontShowAgainCheckBox;
 
+		final boolean cancelButtonIsNegative = false;
+
 		if (dontShowAgain != null) {
 			final LayoutInflater inflater = LayoutInflater.from(context);
 			final View view = inflater.inflate(R.layout.dialog_with_dontshow_checkbox, null);
 			dontShowAgainCheckBox = (CheckBox) view.findViewById(R.id.dont_show);
-			dontShowAgain.result = dontShowAgain.getValue(context);
-			dontShowAgainCheckBox.setChecked(dontShowAgain.result);
+			final boolean actualValue = dontShowAgain.getValue(context);
+			dontShowAgainCheckBox.setChecked(dontShowAgain.getViewValue(actualValue));
 			final String text = dontShowAgain.getText(context);
 			if (text != null)
 				dontShowAgainCheckBox.setText(text);
@@ -185,31 +187,32 @@ public class SystemUIUtil {
 			dontShowAgainCheckBox = null;
 		}
 
-
-		builder.setCancelable(true)
-			.setPositiveButton(action, new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					if (dontShowAgain != null) {
-						dontShowAgain.result = dontShowAgainCheckBox.isChecked();
+		final DialogInterface.OnClickListener clickListener = new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				if (dontShowAgain != null) {
+					if (id==DialogInterface.BUTTON_POSITIVE || id==DialogInterface.BUTTON_NEGATIVE) {
+						final boolean result = dontShowAgain.getViewValue(dontShowAgainCheckBox.isChecked());
 						if (dontShowAgain.key != null) {
-							dontShowAgain.setValue(context, dontShowAgain.result);
+							dontShowAgain.setValue(context, result);
 						}
 					}
-					if (onClickListener != null) {
-						onClickListener.onClick(dialog, id);
-					}
-					dialog.cancel();
 				}
-			})
-			.setNegativeButton(ResourcesUtil.getString(context, android.R.string.cancel), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					if (onClickListener != null) {
-						onClickListener.onClick(dialog, id);
-					}
-					dialog.cancel();
+				if (onClickListener != null) {
+					onClickListener.onClick(dialog, id);
 				}
-			});
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+				dialog.cancel();
+			}
+		};
+
+		builder.setCancelable(true)
+			.setPositiveButton(action, onClickListener);
+		if (cancelButtonIsNegative) {
+			builder.setNegativeButton(ResourcesUtil.getString(context, android.R.string.cancel), clickListener);
+		} else {
+			builder.setNeutralButton(ResourcesUtil.getString(context, android.R.string.cancel), clickListener);
+		}
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
 			builder
 				.setOnDismissListener(new DialogInterface.OnDismissListener() {
 					@Override
@@ -219,7 +222,7 @@ public class SystemUIUtil {
 						}
 					}
 				});
-			}
+		}
 
 		builder.setTitle(titre);
 		if (iconId != 0)
