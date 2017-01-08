@@ -1,6 +1,7 @@
 package net.tetrakoopa.mdu.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -49,6 +50,12 @@ public class FileUtil {
 	 */
 	public static String fileSizeAsString(long size) {
 		return fileSizeAsString(size, "%1$.3f %2$sb.");
+	}
+
+	public static byte[] readContent(InputStream input) throws IOException {
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		copy(input, buffer, new byte[4*1024]);
+		return buffer.toByteArray();
 	}
 
 	/**
