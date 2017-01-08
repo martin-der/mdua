@@ -65,7 +65,7 @@ public class DontShowAgainLinkedToPreference {
 		return getPreferences(context).edit().putBoolean(key, value).commit();
 	}
 	public final String getText(Context context) {
-		return text.getText(context);
+		return text == null ? null : text.getText(context);
 	}
 
 
