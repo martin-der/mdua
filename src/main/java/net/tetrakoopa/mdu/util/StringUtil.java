@@ -2,6 +2,10 @@ package net.tetrakoopa.mdu.util;
 
 public class StringUtil {
 
+	public interface ToStringable<E> {
+		String asString(E object);
+	}
+
 	public static String firstCharToUpperCase(String string) {
 		if (string == null) {
 			return null;
@@ -60,6 +64,40 @@ public class StringUtil {
 		final String replacement = "$1_$2";
 		final String separated =  string.replaceAll(regex, replacement);
 		return upper ? separated.toUpperCase() : separated.toLowerCase();
+	}
+
+	public static String concatToString(Object objects[], ToStringable<Object> convertor, String separator) {
+		final StringBuffer buffer = new StringBuffer();
+		concatIntoBuffer(buffer, objects, convertor, separator);
+		return buffer.toString();
+	}
+	public static void concatIntoBuffer(StringBuffer buffer, Object objects[], ToStringable<Object> convertor, String separator) {
+		boolean first = true;
+		for (Object object : objects) {
+			if (first) {
+				first = false;
+			} else {
+				buffer.append(separator);
+			}
+			buffer.append(object == null ? object : (convertor == null ? object.toString() : convertor.asString(object)));
+		}
+	}
+
+	public static String concatToString(String strings[], String separator) {
+		final StringBuffer buffer = new StringBuffer();
+		concatIntoBuffer(buffer, strings, separator);
+		return buffer.toString();
+	}
+	public static void concatIntoBuffer(StringBuffer buffer, String strings[], String separator) {
+		boolean first = true;
+		for (String string : strings) {
+			if (first) {
+				first = false;
+			} else {
+				buffer.append(separator);
+			}
+			buffer.append(string);
+		}
 	}
 
 }
