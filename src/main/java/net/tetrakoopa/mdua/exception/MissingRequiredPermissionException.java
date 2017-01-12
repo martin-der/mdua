@@ -1,14 +1,14 @@
 package net.tetrakoopa.mdua.exception;
 
-public class MissingNeededException extends RuntimeException {
+public class MissingRequiredPermissionException extends RuntimeException {
 
     private final String [] permissionNames;
     private final static String NOTHING[] = new String[0];
 
-    public MissingNeededException() {
+    public MissingRequiredPermissionException() {
         this(NOTHING);
     }
-    public MissingNeededException(String ...permissionNames) {
+    public MissingRequiredPermissionException(String ...permissionNames) {
         this.permissionNames = permissionNames == null ? NOTHING : permissionNames;
     }
 }
