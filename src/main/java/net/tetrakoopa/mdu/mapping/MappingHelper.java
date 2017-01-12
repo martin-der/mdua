@@ -55,7 +55,7 @@ public class MappingHelper<BEAN, VIEW> {
 	public void addAttribute(String name) {
 		addAttribute(name, true);
 	}
-	public void addAttribute(String name, boolean writeEnabled) {
+	public void addAttribute(String name, boolean writable) {
 		for (Field field : beanClass.getDeclaredFields()) {
 			if (field.getName().equals(name)) {
 
@@ -63,7 +63,7 @@ public class MappingHelper<BEAN, VIEW> {
 
 				final int modifiers = field.getModifiers();
 				if (Modifier.isPublic(modifiers)) {
-					if (writeEnabled) {
+					if (writable) {
 						if (Modifier.isFinal(modifiers)) {
 							throw new MappingException(faultingAttribute(name)+" won't be settable since its public field is final");
 						}
@@ -74,7 +74,7 @@ public class MappingHelper<BEAN, VIEW> {
 
 				final boolean isPrimitiveBoolean = boolean.class.equals(attributeType);
 				final String gettterName = getterName(name, isPrimitiveBoolean);
-				final String settterName = writeEnabled ? setterName(name) : null;
+				final String settterName = writable ? setterName(name) : null;
 				Method getter = null;
 				Method setter = null;
 
@@ -104,12 +104,12 @@ public class MappingHelper<BEAN, VIEW> {
 					}
 				}
 
-				if (getter != null && (setter != null || !writeEnabled)) {
+				if (getter != null && (setter != null || !writable)) {
 					mappings.put(name, new AttributeMapping(field, getter, setter));
 					return;
 				}
 
-				if (writeEnabled)
+				if (writable)
 					throw new MappingException(faultingAttribute(name)+" does not have getter and setter ( '"+gettterName+"' and '"+settterName+"' )");
 				else
 					throw new MappingException(faultingAttribute(name)+" does not have getter ( '"+gettterName+"' )");

@@ -8,7 +8,7 @@ import android.os.Build;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
-import net.tetrakoopa.mdua.exception.MissingNeededException;
+import net.tetrakoopa.mdua.exception.MissingRequiredPermissionException;
 
 public class ContentUtil {
 
@@ -54,10 +54,10 @@ public class ContentUtil {
     /**
      *
      * @return path on external storage
-     * @throws MissingNeededException, if path can't be know because of missing 'android.permission.READ_EXTERNAL_STORAGE' permission
+     * @throws MissingRequiredPermissionException, if path can't be know because of missing 'android.permission.READ_EXTERNAL_STORAGE' permission
      */
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public static String getMediaPath(ContentResolver contentresolver, Uri uri) throws MissingNeededException {
+    public static String getMediaPath(ContentResolver contentresolver, Uri uri) throws MissingRequiredPermissionException {
         final String wholeID;
 
         try {
@@ -85,7 +85,7 @@ public class ContentUtil {
                 cursor.close();
             }
         }catch(SecurityException securityException) {
-            throw new MissingNeededException("android.permission.READ_EXTERNAL_STORAGE");
+            throw new MissingRequiredPermissionException("android.permission.READ_EXTERNAL_STORAGE");
         }
     }
 }

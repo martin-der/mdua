@@ -6,6 +6,7 @@ public class ExceptionUtil {
 	/**
 	 * @param throwable : not null
 	 * @return throwable messages separated by ' : '
+	 * @deprecated : use <code>getMessages(Throwable throwable, String separator : null, String exceptionNameSeparator : null)</code> instead
 	 */
 	public static String getMessages(Throwable throwable) {
 		return getMessages(throwable, false, null);
@@ -15,6 +16,7 @@ public class ExceptionUtil {
 	 * @param throwable : not null
 	 * @param withExceptionName : if <code>true</code> prints exception class name, otherwise only prints exception message
 	 * @return throwable messages separated by ' : '
+	 * @deprecated : use <code>getMessages(Throwable throwable, String separator : null, String exceptionNameSeparator)</code> instead
 	 */
 	public static String getMessages(Throwable throwable, boolean withExceptionName) {
 		return getMessages(throwable, withExceptionName, null);
@@ -25,8 +27,18 @@ public class ExceptionUtil {
 	 * @param withExceptionName : if <code>true</code> prints exception class name, otherwise only prints exception message
 	 * @param separator : if null, defaults to ' : '
 	 * @return throwable messages separated by <code>separator</code>
+	 * @deprecated : use <code>getMessages(Throwable throwable, String separator, String exceptionNameSeparator)</code> instead
 	 */
 	public static String getMessages(Throwable throwable, boolean withExceptionName, String separator) {
+		return getMessages(throwable, separator, withExceptionName ? ":": null);
+	}
+	/**
+	 * @param throwable : not null
+	 * @param separator : if null, defaults to ' : '
+	 * @param exceptionNameSeparator : if not null, exception class name in added before the message
+	 * @return throwable messages separated by <code>separator</code>
+	 */
+	public static String getMessages(Throwable throwable, String separator, String exceptionNameSeparator) {
 		if (separator==null)
 			separator = " : ";
 
@@ -39,7 +51,11 @@ public class ExceptionUtil {
 			else
 				messages.append(separator);
 
-			messages.append(withExceptionName ? throwable.toString() : throwable.getMessage());
+			if (exceptionNameSeparator != null) {
+				messages.append(throwable.getClass().getName());
+				messages.append(exceptionNameSeparator);
+			}
+			messages.append(throwable.getMessage());
 
 		} while ((throwable = throwable.getCause())!=null);
 
