@@ -36,7 +36,7 @@ public class BeanEditionDialogBuilder<BEAN> extends AlertDialog.Builder {
 	}
 
 	public AlertDialog.Builder setUpperText(int stringId, String... formatArgs) {
-		setUpperText(getContext().getResources().getString(stringId, formatArgs));
+		setUpperText(getContext().getResources().getString(stringId, (Object[])formatArgs));
 		return this;
 	}
 	public AlertDialog.Builder setUpperText(int stringId) {
@@ -49,7 +49,7 @@ public class BeanEditionDialogBuilder<BEAN> extends AlertDialog.Builder {
 	}
 
 	public AlertDialog.Builder setLowerText(int stringId, String... formatArgs) {
-		setLowerText(getContext().getResources().getString(stringId, formatArgs));
+		setLowerText(getContext().getResources().getString(stringId, (Object[])formatArgs));
 		return this;
 	}
 	public AlertDialog.Builder setLowerText(int stringId) {
@@ -62,7 +62,7 @@ public class BeanEditionDialogBuilder<BEAN> extends AlertDialog.Builder {
 	}
 
 	public AlertDialog.Builder setActionLabel(int stringId, String... formatArgs) {
-		setActionLabel(getContext().getResources().getString(stringId, formatArgs));
+		setActionLabel(getContext().getResources().getString(stringId, (Object[])formatArgs));
 		return this;
 	}
 	public AlertDialog.Builder setActionLabel(int stringId) {
