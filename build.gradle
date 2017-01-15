@@ -2,6 +2,8 @@
 allprojects {
     repositories {
         jcenter()
+		maven { url 'https://www.jitpack.io' }
+		//mavenLocal()
     }
     tasks.withType(JavaCompile) {
         options.incremental = true
@@ -19,7 +21,9 @@ buildscript {
 apply plugin: 'com.android.library'
 apply plugin: 'maven'
 
-group = 'com.github.martin-der'
+
+group = 'com.github.martin-der.mdua'
+version = '1.0.0-SNAPSHOT'
 
 android {
     compileSdkVersion 23
@@ -41,12 +45,12 @@ android {
     sourceSets {
         androidTest.setRoot('src/test/java')
     }
-    /*sourceSets.androidTest.setRoot('test')*/
 }
 dependencies {
-    //compile fileTree(dir: 'libs', include: ['*.jar'])
-    //compile 'com.android.support:appcompat-v7:23.1.0'
-    testCompile 'junit:junit:4.12'
+	compile 'com.github.martin-der.mdu4j:util:68e356523573a023180889566b5e338aa0b0ce98'
+	//compile 'com.github.martin-der.mdu4j:util:1.0.0-SNAPSHOT'
+	// compile 'com.android.support:appcompat-v7:23.1.0'
+	testCompile 'junit:junit:4.12'
 }
 
 task wrapper(type: Wrapper) {
