@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 import net.tetrakoopa.mdua.Mdua;
-import net.tetrakoopa.mdu.util.FileUtil;
+import net.tetrakoopa.mdu4j.util.FileUtil;
 
 import android.app.Activity;
 import android.app.AlertDialog;

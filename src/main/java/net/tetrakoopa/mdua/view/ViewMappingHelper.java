@@ -2,7 +2,7 @@ package net.tetrakoopa.mdua.view;
 
 import android.view.View;
 
-import net.tetrakoopa.mdu.mapping.MappingHelper;
+import net.tetrakoopa.mdu4j.view.MappingHelper;
 import net.tetrakoopa.mdua.view.mapping.annotation.UIElement;
 
 public class ViewMappingHelper<BEAN> extends MappingHelper<BEAN, View> {
