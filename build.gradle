@@ -47,12 +47,13 @@ android {
     }
 }
 dependencies {
-	compile 'com.github.martin-der.mdu4j:util:68e356523573a023180889566b5e338aa0b0ce98'
+	compile 'com.github.martin-der.mdu4j:util:676636588fd7f3b2c6524d95a8d0e4ccb4a8bc76'
 	//compile 'com.github.martin-der.mdu4j:util:1.0.0-SNAPSHOT'
 	// compile 'com.android.support:appcompat-v7:23.1.0'
 	testCompile 'junit:junit:4.12'
 }
 
+/*
 task wrapper(type: Wrapper) {
     gradleVersion = '2.4'
-}
+}*/
